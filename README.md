@@ -2,7 +2,7 @@
 
 Hour `0-1` now has a runnable split scaffold:
 
-- `apps/web`: Next.js 16 App Router frontend with Tailwind v4, shadcn/ui, React Flow, Supabase utilities, Neo4j health checks, and `/api/health`.
+- `apps/web`: Next.js 16 App Router frontend with Tailwind v4, shadcn/ui, React Flow, a full Session A app shell, typed client boundaries, Supabase utilities, Neo4j health checks, and `/api/health`.
 - `worker`: FastAPI worker with connector health routes, PRD-aligned stub endpoints, direct Supabase Postgres checks, and Neo4j AuraDB checks.
 
 ## Repo layout
@@ -30,6 +30,17 @@ npm.cmd run dev
 ```
 
 The web app serves at `http://127.0.0.1:3000`.
+
+Routes:
+
+```text
+/
+/demo
+/ask
+/graph
+/skills
+/health
+```
 
 Health endpoint:
 
@@ -82,6 +93,7 @@ GET /worker/health/connectors
 - The Next.js app uses Supabase's project URL plus publishable key pattern for frontend-safe access.
 - The FastAPI worker uses a direct Postgres connection string for Supabase DB verification because backend application traffic should use a proper Postgres connection instead of browser-oriented data APIs.
 - Neo4j Aura should be configured with a `neo4j+s://` URI unless your instance explicitly requires another supported scheme.
+- The Session A shell intentionally stops short of treating database auth as complete until real env credentials are provided and the health checks return `ready`.
 
 ## Verification
 

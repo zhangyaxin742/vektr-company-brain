@@ -1,13 +1,7 @@
 import neo4j from "neo4j-driver";
 
 import { getEnvSummary, getWebEnv } from "@/lib/env";
-
-export type ConnectorStatus = {
-  name: string;
-  state: "ready" | "not_configured" | "error";
-  summary: string;
-  detail?: string;
-};
+import type { ConnectorStatus } from "@/lib/types";
 
 async function checkSupabaseProject(): Promise<ConnectorStatus> {
   const env = getWebEnv();

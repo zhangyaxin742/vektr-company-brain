@@ -7,115 +7,99 @@ import type { Edge, Node } from "@xyflow/react";
 
 const nodes: Node[] = [
   {
-    id: "incident",
-    position: { x: 220, y: 24 },
-    data: { label: "Nov 3 outage" },
-    style: {
-      width: 180,
-      borderRadius: 24,
-      border: "1px solid rgba(17, 24, 39, 0.14)",
-      background: "#fff7ed",
-      color: "#7c2d12",
-      padding: 18,
-      fontWeight: 600,
-    },
-  },
-  {
-    id: "customer",
-    position: { x: 26, y: 194 },
+    id: "refund-request",
+    position: { x: 36, y: 202 },
     data: { label: "TeraCorp refund request" },
     style: {
       width: 220,
       borderRadius: 24,
-      border: "1px solid rgba(17, 24, 39, 0.14)",
-      background: "#f5f3ff",
-      color: "#4c1d95",
+      border: "1px solid rgba(255,255,255,0.12)",
+      background: "rgba(255,255,255,0.06)",
+      color: "white",
       padding: 18,
-      fontWeight: 600,
+      fontWeight: 500,
+    },
+  },
+  {
+    id: "outage",
+    position: { x: 240, y: 36 },
+    data: { label: "Nov 3 outage" },
+    style: {
+      width: 170,
+      borderRadius: 24,
+      border: "1px solid rgba(255,255,255,0.12)",
+      background: "rgba(255,255,255,0.05)",
+      color: "white",
+      padding: 18,
+      fontWeight: 500,
     },
   },
   {
     id: "policy",
-    position: { x: 280, y: 248 },
+    position: { x: 296, y: 282 },
     data: { label: "Refund policy" },
     style: {
-      width: 160,
+      width: 170,
       borderRadius: 24,
-      border: "1px solid rgba(17, 24, 39, 0.14)",
-      background: "#ecfeff",
-      color: "#155e75",
+      border: "1px solid rgba(255,255,255,0.12)",
+      background: "rgba(255,255,255,0.05)",
+      color: "white",
       padding: 18,
-      fontWeight: 600,
+      fontWeight: 500,
     },
   },
   {
     id: "skill",
-    position: { x: 508, y: 192 },
-    data: { label: "Enterprise refund handling.skill" },
+    position: { x: 520, y: 188 },
+    data: { label: "Enterprise refund handling" },
     style: {
-      width: 250,
+      width: 244,
       borderRadius: 24,
-      border: "1px solid rgba(17, 24, 39, 0.14)",
-      background: "#f0fdf4",
-      color: "#166534",
+      border: "1px solid rgba(255,255,255,0.12)",
+      background: "rgba(255,255,255,0.08)",
+      color: "white",
       padding: 18,
-      fontWeight: 600,
+      fontWeight: 500,
     },
   },
 ];
 
 const edges: Edge[] = [
-  {
-    id: "incident-customer",
-    source: "incident",
-    target: "customer",
-    label: "caused",
-    animated: true,
-  },
-  {
-    id: "customer-policy",
-    source: "customer",
-    target: "policy",
-    label: "checks",
-  },
-  {
-    id: "policy-skill",
-    source: "policy",
-    target: "skill",
-    label: "compiles into",
-  },
-  {
-    id: "incident-skill",
-    source: "incident",
-    target: "skill",
-    label: "cited in",
-  },
+  { id: "a", source: "outage", target: "refund-request", label: "caused", animated: true },
+  { id: "b", source: "refund-request", target: "policy", label: "checks" },
+  { id: "c", source: "policy", target: "skill", label: "compiles into" },
+  { id: "d", source: "outage", target: "skill", label: "cited in" },
 ];
 
 export function GraphPreview() {
   return (
-    <div className="h-[420px] overflow-hidden rounded-[2rem] border border-black/10 bg-white/90 shadow-[0_28px_90px_-40px_rgba(17,24,39,0.55)]">
-      <ReactFlow
-        fitView
-        nodes={nodes}
-        edges={edges}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={false}
-        zoomOnDoubleClick={false}
-        panOnDrag={false}
-      >
-        <MiniMap
-          pannable
-          zoomable
-          style={{
-            background: "rgba(255,255,255,0.92)",
-            border: "1px solid rgba(17, 24, 39, 0.1)",
-          }}
-        />
-        <Controls showInteractive={false} />
-        <Background color="rgba(17, 24, 39, 0.08)" gap={22} />
-      </ReactFlow>
+    <div className="surface-panel h-[460px] overflow-hidden p-4">
+      <div className="gradient-frame h-full rounded-[28px] p-px">
+        <div className="h-full overflow-hidden rounded-[28px] bg-[#101010]">
+          <ReactFlow
+            fitView
+            nodes={nodes}
+            edges={edges}
+            nodesDraggable={false}
+            nodesConnectable={false}
+            elementsSelectable={false}
+            zoomOnDoubleClick={false}
+            panOnDrag={false}
+            proOptions={{ hideAttribution: true }}
+          >
+            <MiniMap
+              pannable
+              zoomable
+              style={{
+                background: "rgba(13,13,13,0.98)",
+                border: "1px solid rgba(255,255,255,0.1)",
+              }}
+            />
+            <Controls showInteractive={false} />
+            <Background color="rgba(255,255,255,0.08)" gap={22} />
+          </ReactFlow>
+        </div>
+      </div>
     </div>
   );
 }
