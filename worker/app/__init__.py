@@ -1,0 +1,1 @@
+"""Vektr worker package."""
