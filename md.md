@@ -425,3 +425,396 @@ Do not implement business logic yet. Focus on clean structure, env vars, layout,
     sizes outside the token system
   - Confirm the gradient accent appears only in strategic
     CTAs and highlights, not everywhere
+
+      # Session A Plan: Database + RLS + Auth
+  Vertical Slice
+
+  ## Summary
+
+  Current anchors:
+
+  - PRD schema and deliverables live in /abs/
+    path/C:/Users/user/Desktop/vektr-company-
+    brain/vektr_24h_sprint_prd.md:578, /abs/path/
+    C:/Users/user/Desktop/vektr-company-brain/
+    vektr_24h_sprint_prd.md:1139, and /abs/path/
+    C:/Users/user/Desktop/vektr-company-brain/
+    vektr_24h_sprint_prd.md:1414.
+  - The only Supabase server code today is a
+    service-role admin client in /abs/path/C:/
+    Users/user/Desktop/vektr-company-brain/apps/
+    web/src/lib/supabase/server.ts:1.
+  - There is no supabase/ directory, no
+    migrations, no SSR auth client, no proxy.ts,
+    and no lib/server/db DAL yet.
+
+  Plan intent:
+
+  - Implement the PRD tables plus production-
+    grade constraints, indexes, helper functions,
+    RLS, and a match_chunks RPC.
+  - Add real Supabase SSR auth for Next.js 16
+    with proxy.ts, magic-link sign-in, protected
+    product routes, and org-scoped server-only
+    data access.
+  - Use URL slug as the active org context and
+    keep compatibility by redirecting legacy
+    product routes to the user’s default org
+    route.
+
+  Research-based additions beyond the PRD:
+
+  - Add pgcrypto for UUID defaults alongside
+    vector.
+  - Use check constraints, not null, JSON/array
+    defaults, updated_at trigger, and targeted
+    indexes for RLS performance.
+  - Put membership helper functions in a non-
+    exposed schema with hardened function
+    privileges.
+  - Keep match_chunks as security invoker so RLS
+    still applies; explicitly revoke default
+    function execution and grant only what is
+    needed.
+  - Replace the current service-role-first app
+    pattern with user-scoped SSR clients for
+    reads; reserve service role for admin/worker
+    paths only.
+
+  ## Action Items
+
+  1. Create the Supabase project structure in-
+     repo.
+      - Add supabase/migrations/ for SQL
+        migrations.
+      - Add a local docs note or README section
+        covering supabase db push / supabase
+        migration up usage.
+      - Add generated DB types output path in the
+        web app, for example apps/web/src/lib/
+        supabase/database.types.ts.
+  2. Add the foundational extensions and schemas.
+      - Create a first migration enabling
+        pgcrypto and vector.
+      - Create a non-exposed helper schema such
+        as private.
+      - Set default privileges so new public
+        functions are not executable by anon/
+        authenticated unless explicitly granted.
+  3. Create the seven PRD tables with production-
+     safe defaults.
+      - organizations
+      - memberships
+      - documents
+      - chunks
+      - skills
+      - health_flags
+      - ask_logs
+      - Use uuid primary key default
+        gen_random_uuid().
+      - Use created_at default now() everywhere
+        and updated_at default now() where
+        mutable.
+      - Use metadata jsonb not null default
+        '{}'::jsonb and array fields with empty-
+        array defaults where appropriate.
+      - Add not null to all required PRD columns
+        instead of leaving shape loose.
+  4. Add relational integrity and lifecycle
+     rules.
+      - memberships.org_id -> organizations.id
+        with on delete cascade.
+      - documents.org_id -> organizations.id with
+        on delete cascade.
+      - chunks.org_id -> organizations.id and
+        chunks.document_id -> documents.id with
+        on delete cascade.
+      - skills.org_id, health_flags.org_id,
+        ask_logs.org_id all reference
+        organizations.id with on delete cascade.
+      - memberships.user_id and ask_logs.user_id
+        reference auth.users(id).
+      - Add a consistency trigger on chunks to
+        ensure the referenced document belongs to
+        the same org_id.
+  5. Add robustness constraints the PRD implies
+     but does not spell out.
+      - Unique organizations.slug.
+      - Unique memberships (org_id, user_id).
+      - Unique chunks (document_id, chunk_index).
+      - Unique skills (org_id, slug, version) or,
+        if versioning stays single-current for
+        now, unique (org_id, slug).
+      - Check constraints for:
+          - membership role: owner | admin |
+            member
+          - document source_type: slack_json |
+            email_json | markdown | text | pdf |
+            demo_seed
+          - skill status: draft | approved |
+            rejected
+          - health severity: info | warning |
+            critical
+          - health type: conflict | missing_owner
+            | stale_skill | low_confidence |
+            unapproved_skill | customer_risk
+          - health status: open | dismissed |
+            resolved
+          - confidence ranges such as 0 <=
+            confidence <= 1
+  6. Add indexes required for both app queries
+     and RLS performance.
+      - B-tree indexes on all policy/filter
+        columns: org_id, user_id, and common sort
+        columns like created_at.
+      - Composite indexes:
+          - memberships (user_id, org_id)
+          - documents (org_id, created_at desc)
+          - chunks (org_id, document_id)
+          - skills (org_id, status, updated_at
+            desc)
+          - health_flags (org_id, status,
+            severity, created_at desc)
+          - ask_logs (org_id, user_id, created_at
+            desc)
+      - Vector index on chunks.embedding using
+        cosine distance, partial on non-null
+        embeddings.
+      - Start with HNSW for production-readiness
+        unless Supabase project/version blocks
+        it; otherwise fall back to IVFFlat.
+  7. Add timestamp maintenance.
+      - Create one reusable trigger function to
+        set updated_at = now().
+      - Attach it to organizations, documents,
+        skills, and health_flags.
+  8. Implement RLS helper functions in private.
+      - private.is_authenticated() or inline
+        (select auth.uid()) is not null.
+      - private.is_org_member(target_org_id uuid)
+        returns boolean.
+      - private.is_org_admin(target_org_id uuid)
+        returns boolean.
+      - private.is_org_owner(target_org_id uuid)
+        returns boolean.
+      - Make these security definer, set
+        search_path = '', schema-qualify all
+        relations, and keep them out of exposed
+        schemas.
+  9. Enable RLS on every exposed table.
+      - Explicitly enable row level security on
+        all seven public tables.
+      - Do not rely on dashboard defaults.
+      - Do not use permissive “authenticated can
+        read all” shortcuts.
+  10. Create the policies.
+
+  - organizations: members can select; admins/
+    owners can update; inserts/deletes remain
+    server-managed for now.
+  - memberships: org members can select
+    memberships in their org; only owners/admins
+    can insert/update/delete memberships.
+  - documents: org members can select; writes
+    limited to admins/owners or server-managed
+    ingestion paths.
+  - chunks: org members can select; writes
+    limited to admins/owners or ingestion paths.
+  - skills: org members can select; admins/owners
+    can update approval/status fields; creation
+    stays server/worker managed.
+  - health_flags: org members can select; admins/
+    owners can update resolution fields; creation
+    stays server/worker managed.
+  - ask_logs: org members can insert rows only
+    for user_id = auth.uid() in orgs they belong
+    to; users can read their own ask logs;
+    admins/owners can read org logs if desired
+    for audit.
+  - Use to authenticated and (select auth.uid())
+    patterns for policy performance.
+
+  11. Create match_chunks RPC.
+
+  - Signature should accept target_org_id uuid,
+    query_embedding vector(1536), match_count
+    integer, and optional similarity threshold.
+  - Return chunk id, document id, content,
+    metadata, similarity score, and optionally
+    document title/source_type.
+  - Filter by org_id = target_org_id.
+  - Keep function security invoker so table RLS
+    still applies.
+  - Revoke execute from public and anon; grant
+    execute to authenticated only.
+
+  12. Add generated DB types.
+
+  - Generate TypeScript database types from the
+    Supabase schema after migrations.
+  - Wire those types into the web DAL and
+    Supabase clients so queries are typed.
+
+  13. Replace the current Supabase client setup
+     with SSR-safe separation.
+
+  - Keep an admin client for server-only admin/
+    worker operations, but rename it clearly to
+    avoid accidental use in request-path reads.
+  - Add a browser client using @supabase/ssr.
+  - Add a server request client that reads/writes
+    auth cookies.
+  - Remove the assumption that normal page loads
+    use the service role key.
+
+  14. Add Next.js 16 auth session refresh via
+     proxy.ts.
+
+  - Create proxy.ts at the app root for Supabase
+    cookie refresh.
+  - Match product and auth routes only.
+  - Keep the proxy thin: token refresh and
+    redirect decisions only, no DAL work.
+
+  15. Add the minimal auth flow for this slice.
+
+  - Add magic-link sign-in page and sign-out
+    action.
+  - Add callback/verification route if needed by
+    the chosen Supabase flow.
+  - Add protected product access: unauthenticated
+    users are redirected to sign-in.
+
+  16. Add org-scoped routing and compatibility
+     redirects.
+
+  - Adopt /org/[slug]/ask, /org/[slug]/graph, /
+    org/[slug]/skills, /org/[slug]/health.
+  - Keep existing /ask, /graph, /skills, /health
+    as redirects to the user’s default org.
+  - Default org selection = first membership by
+    creation date only for redirect
+    bootstrapping; once redirected, all app reads
+    are explicitly slug-scoped.
+
+  17. Build the server-only DAL in apps/web/src/
+     lib/server/db.
+
+  - Modules from the PRD:
+      - orgs.ts
+      - documents.ts
+      - chunks.ts
+      - skills.ts
+      - health.ts
+      - graph.ts stubbed if graph DB work is not
+        in this slice
+  - Each function must:
+      - create a request-scoped Supabase server
+        client
+      - call auth.getUser() and fail closed if
+        missing
+      - resolve org by slug
+      - verify membership
+      - select only needed columns
+      - validate inbound params with Zod
+      - never expose service-role credentials or
+        raw internal metadata
+  - Add one shared helper for “load current user
+    + org membership by slug”.
+
+  18. Define the initial DAL surface needed to
+     satisfy the deliverable.
+
+  - getAccessibleOrganizationsForUser()
+  - getOrganizationBySlug(slug)
+  - getWorkspaceDocuments(orgSlug)
+  - getWorkspaceSkills(orgSlug)
+  - getWorkspaceHealthFlags(orgSlug)
+  - searchChunks(orgSlug, embedding, count,
+    threshold?) via match_chunks
+  - createAskLog(orgSlug, payload) with self-user
+    enforcement
+  - This is enough for “authenticated user can
+    load workspace data” without overbuilding the
+    rest of the app.
+
+  19. Update env validation and naming.
+
+  - Keep NEXT_PUBLIC_SUPABASE_URL and
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.
+  - Keep SUPABASE_SERVICE_ROLE_KEY server-only
+    and mark it optional-but-dangerous in docs.
+  - Add any auth callback base URL or site URL
+    config required by Supabase magic links.
+  - Update env validation to distinguish browser-
+    safe keys from server-only keys.
+
+  20. Add verification coverage for the slice.
+
+  - SQL verification queries for same-user/same-
+    org reads and cross-org denials.
+  - App-level checks for unauthenticated
+    redirect, authenticated load, and org slug
+    access control.
+  - One DAL test path proving a user cannot read
+    another org even if they guess its slug.
+  - One RPC test proving match_chunks only
+    returns chunks from the requested org.
+
+  ## Public Interfaces / Types
+
+  - New database objects:
+      - Public tables: organizations,
+        memberships, documents, chunks, skills,
+        health_flags, ask_logs
+      - Public RPC: public.match_chunks(...)
+      - Private helpers:
+        private.is_org_member(...),
+        private.is_org_admin(...),
+        private.is_org_owner(...)
+  - New app route shape:
+      - /org/[slug]/ask
+      - /org/[slug]/graph
+      - /org/[slug]/skills
+      - /org/[slug]/health
+      - /auth/sign-in
+  - New server-only modules:
+      - apps/web/src/lib/server/db/*
+  - New generated types:
+      - apps/web/src/lib/supabase/
+        database.types.ts
+
+  ## Test Plan
+
+  1. Migration test: a clean Supabase database
+     can apply all migrations without manual SQL
+     fixes.
+  2. Auth test: unauthenticated request to any /
+     org/[slug]/* product route redirects to
+     sign-in.
+  3. Membership test: authenticated user can load
+     org rows only for orgs they belong to.
+  4. Cross-org denial test: authenticated user
+     cannot read another org’s documents, chunks,
+     skills, health_flags, or ask_logs.
+  5. Policy write test: non-admin member cannot
+     create memberships or mutate approval/status
+     fields they should not control.
+  6. Ask-log test: a user can insert an ask log
+     only with their own user_id and only inside
+     a joined org.
+  7. RPC test: match_chunks returns ranked rows
+  8. Redirect test: legacy /ask and /skills
+  - PRD remains the source of truth for table
+    names and core fields; this plan adds
+    constraints, indexes, and auth architecture
+    needed for production-readiness.
+  - Embeddings stay at vector(1536) per PRD for
+    the first slice.
+  - Initial auth flow is Supabase magic link.
+  - Active org is chosen by URL slug; legacy
+    routes redirect to the user’s default org.
+  - Org creation and ingestion writes are server-
+    managed in this slice, not user-self-service.
+  - match_chunks uses cosine similarity and
+    returns citation-ready chunk rows.

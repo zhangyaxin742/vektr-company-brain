@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const webEnvSchema = z.object({
+  NEXT_PUBLIC_APP_URL: z.string().url().optional(),
   NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1).optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
@@ -29,6 +30,7 @@ export type WebEnv = z.infer<typeof webEnvSchema>;
 
 export function getWebEnv() {
   return webEnvSchema.safeParse({
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
@@ -55,9 +57,10 @@ export function getEnvSummary() {
   const env = result.data;
 
   return {
-    valid: true,
-    fastapiWorkerUrl: env.FASTAPI_WORKER_URL,
-    missingKeys: [
+      valid: true,
+      fastapiWorkerUrl: env.FASTAPI_WORKER_URL,
+      missingKeys: [
+      !env.NEXT_PUBLIC_APP_URL && "NEXT_PUBLIC_APP_URL",
       !env.NEXT_PUBLIC_SUPABASE_URL && "NEXT_PUBLIC_SUPABASE_URL",
       !env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
         "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",

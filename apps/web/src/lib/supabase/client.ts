@@ -2,15 +2,11 @@
 
 import { createBrowserClient } from "@supabase/ssr";
 
+import type { Database } from "@/lib/supabase/database.types";
+import { getSupabaseEnv } from "@/lib/supabase/shared";
+
 export function createSupabaseBrowserClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const { url, publishableKey } = getSupabaseEnv();
 
-  if (!url || !publishableKey) {
-    throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY."
-    );
-  }
-
-  return createBrowserClient(url, publishableKey);
+  return createBrowserClient<Database>(url, publishableKey);
 }
