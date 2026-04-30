@@ -1,14 +1,5 @@
-import { AppPage } from "@/components/app-page";
-import { SkillsWorkspace } from "@/components/skills-workspace";
+import { redirectToDefaultProductRoute } from "@/lib/server/product-routing";
 
-export default function SkillsPage() {
-  return (
-    <AppPage
-      eyebrow="Skill compiler"
-      title="Turn operating knowledge into executable skills."
-      description="The wedge is visible now: list, inspect, and export draft skills before any generation logic exists."
-    >
-      <SkillsWorkspace />
-    </AppPage>
-  );
+export default async function SkillsPage() {
+  await redirectToDefaultProductRoute("skills");
 }

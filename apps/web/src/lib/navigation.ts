@@ -1,7 +1,7 @@
 export const productNavigation = [
-  { href: "/graph", label: "Graph" },
-  { href: "/skills", label: "Skills" },
-  { href: "/ask", label: "Ask" },
-  { href: "/health", label: "Health" },
-  { href: "/demo", label: "Demo" },
+  { href: "/graph", label: "Graph", scope: "org" },
+  { href: "/skills", label: "Skills", scope: "org" },
+  { href: "/ask", label: "Ask", scope: "org" },
+  { href: "/health", label: "Health", scope: "org" },
+  { href: "/demo", label: "Demo", scope: "global" },
 ] as const;

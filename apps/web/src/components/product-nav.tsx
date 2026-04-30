@@ -8,16 +8,20 @@ import { cn } from "@/lib/utils";
 
 export function ProductNav() {
   const pathname = usePathname();
+  const scopedMatch = pathname.match(/^\/org\/([^/]+)\//);
+  const scopedPrefix = scopedMatch ? `/org/${scopedMatch[1]}` : null;
 
   return (
     <nav className="flex items-center gap-2 overflow-x-auto pb-1">
       {productNavigation.map((item) => {
-        const active = pathname === item.href;
+        const href =
+          item.scope === "org" && scopedPrefix ? `${scopedPrefix}${item.href}` : item.href;
+        const active = pathname === href;
 
         return (
           <Link
-            key={item.href}
-            href={item.href}
+            key={href}
+            href={href}
             className={cn(
               "shrink-0 rounded-full px-4 py-2 transition",
               active
