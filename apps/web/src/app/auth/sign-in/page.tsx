@@ -38,16 +38,14 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
     <main className="mx-auto flex min-h-screen w-full max-w-[620px] items-center px-5 py-12 sm:px-8">
       <section className="surface-panel w-full space-y-6 px-6 py-7 sm:px-8 sm:py-8">
         <div className="space-y-3">
-          <Link href="/" className="inline-flex items-center gap-3 text-white">
-            <span className="inline-flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/6 text-sm font-medium text-white">
-              V
-            </span>
+          <Link href="/" className="inline-flex items-center gap-3">
+            <span className="brand-mark size-10 text-sm font-medium">V</span>
             <span className="type-body-lg-400">Vektr</span>
           </Link>
           <div className="space-y-2">
-            <p className="type-label text-white/50">Workspace authentication</p>
-            <h1 className="type-heading-04 text-white">Sign in to your organization.</h1>
-            <p className="type-body-xxl-300 text-white/60">
+            <p className="type-label text-muted">Workspace authentication</p>
+            <h1 className="type-heading-04">Sign in to your organization.</h1>
+            <p className="type-body-xxl-300 text-faint">
               Magic-link auth is enabled for the first database and RLS slice. All
               product routes stay behind membership-aware Supabase policies.
             </p>
@@ -57,13 +55,13 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         <form action="/auth/sign-in/request" method="post" className="space-y-4">
           <input type="hidden" name="next" value={next} />
           <label className="block space-y-2">
-            <span className="type-label text-white/55">Work email</span>
+            <span className="type-label text-quiet">Work email</span>
             <input
               type="email"
               name="email"
               defaultValue={email}
               required
-              className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none transition focus:border-white/30"
+              className="surface-input w-full px-4 py-3 outline-none"
               placeholder="you@company.com"
             />
           </label>

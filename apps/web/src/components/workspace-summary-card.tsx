@@ -22,36 +22,36 @@ export function WorkspaceSummaryCard({
   return (
     <aside className="surface-card min-w-[280px] space-y-4 p-5">
       <div className="space-y-1">
-        <p className="type-label text-white/50">Active workspace</p>
-        <h2 className="type-heading-06 text-white">{organizationName}</h2>
-        <p className="type-body-lg-300 capitalize text-white/65">{role}</p>
+        <p className="type-label text-muted">Active workspace</p>
+        <h2 className="type-heading-06">{organizationName}</h2>
+        <p className="type-body-lg-300 capitalize text-faint">{role}</p>
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-white/8 bg-white/4 px-3 py-3">
-          <p className="type-label text-white/50">Docs</p>
-          <p className="mt-1 type-heading-06 text-white">{counts.documents}</p>
+        <div className="surface-stat px-3 py-3">
+          <p className="type-label text-muted">Docs</p>
+          <p className="mt-1 type-heading-06">{counts.documents}</p>
         </div>
-        <div className="rounded-2xl border border-white/8 bg-white/4 px-3 py-3">
-          <p className="type-label text-white/50">Skills</p>
-          <p className="mt-1 type-heading-06 text-white">{counts.skills}</p>
+        <div className="surface-stat px-3 py-3">
+          <p className="type-label text-muted">Skills</p>
+          <p className="mt-1 type-heading-06">{counts.skills}</p>
         </div>
-        <div className="rounded-2xl border border-white/8 bg-white/4 px-3 py-3">
-          <p className="type-label text-white/50">Flags</p>
-          <p className="mt-1 type-heading-06 text-white">{counts.healthFlags}</p>
+        <div className="surface-stat px-3 py-3">
+          <p className="type-label text-muted">Flags</p>
+          <p className="mt-1 type-heading-06">{counts.healthFlags}</p>
         </div>
       </div>
       <div className="space-y-2">
-        <p className="type-label text-white/50">Recent documents</p>
+        <p className="type-label text-muted">Recent documents</p>
         {recentDocuments.length ? (
           <ul className="space-y-2">
             {recentDocuments.map((document) => (
-              <li key={document.id} className="type-body-lg-300 text-white/72">
+              <li key={document.id} className="type-body-lg-300 text-soft">
                 {document.title}
               </li>
             ))}
           </ul>
         ) : (
-          <p className="type-body-lg-300 text-white/55">
+          <p className="type-body-lg-300 text-quiet">
             No documents are available in this workspace yet.
           </p>
         )}

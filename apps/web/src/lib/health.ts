@@ -1,10 +1,11 @@
-import neo4j from "neo4j-driver";
+import "server-only";
 
-import { getEnvSummary, getWebEnv } from "@/lib/env";
+import { getServerEnvResult, getServerEnvSummary } from "@/lib/env/server";
+import { createNeo4jDriver } from "@/lib/server/neo4j";
 import type { ConnectorStatus } from "@/lib/types";
 
 async function checkSupabaseProject(): Promise<ConnectorStatus> {
-  const env = getWebEnv();
+  const env = getServerEnvResult();
 
   if (!env.success) {
     return {
@@ -64,7 +65,7 @@ async function checkSupabaseProject(): Promise<ConnectorStatus> {
 }
 
 async function checkNeo4j(): Promise<ConnectorStatus> {
-  const env = getWebEnv();
+  const env = getServerEnvResult();
 
   if (!env.success) {
     return {
@@ -83,10 +84,11 @@ async function checkNeo4j(): Promise<ConnectorStatus> {
     };
   }
 
-  const driver = neo4j.driver(
-    env.data.NEO4J_URI,
-    neo4j.auth.basic(env.data.NEO4J_USERNAME, env.data.NEO4J_PASSWORD)
-  );
+  const driver = createNeo4jDriver({
+    uri: env.data.NEO4J_URI,
+    username: env.data.NEO4J_USERNAME,
+    password: env.data.NEO4J_PASSWORD,
+  });
 
   try {
     await driver.verifyConnectivity();
@@ -114,5 +116,5 @@ export async function getConnectorStatuses() {
 }
 
 export function getEnvironmentStatus() {
-  return getEnvSummary();
+  return getServerEnvSummary();
 }

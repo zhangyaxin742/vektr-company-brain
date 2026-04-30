@@ -71,8 +71,8 @@ export function GraphWorkspace() {
                       : [...current, filter],
                   )
                 }
-                className={`surface-chip px-3 py-1 capitalize transition ${
-                  active ? "border-white/16 bg-white/9 text-white" : "text-white/50"
+                className={`surface-chip px-3 py-1 capitalize ${
+                  active ? "status-pill-strong" : "text-muted"
                 }`}
               >
                 {filter}
@@ -81,7 +81,7 @@ export function GraphWorkspace() {
           })}
         </div>
 
-        <div className="h-[680px] overflow-hidden rounded-[28px] border border-white/10 bg-black/35">
+        <div className="surface-stage h-[680px] overflow-hidden">
           <ReactFlow
             fitView
             nodes={nodes}
@@ -111,53 +111,53 @@ export function GraphWorkspace() {
       <aside className="surface-panel p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="type-label text-white/50">Node drawer</p>
-            <h2 className="type-heading-05 mt-2 text-white">{selectedNode.label}</h2>
-            <p className="mt-2 type-body-lg-300 capitalize text-white/50">
+            <p className="type-label text-muted">Node drawer</p>
+            <h2 className="type-heading-05 mt-2">{selectedNode.label}</h2>
+            <p className="mt-2 type-body-lg-300 capitalize text-muted">
               {selectedNode.type} | confidence {selectedNode.confidence}
             </p>
           </div>
-          <span className="surface-chip px-3 py-1 text-white/70">Ask about this node</span>
+          <span className="status-pill px-3 py-1">Ask about this node</span>
         </div>
 
-        <p className="mt-6 type-body-xxl-300 text-white/70">{selectedNode.summary}</p>
+        <p className="mt-6 type-body-xxl-300 text-soft">{selectedNode.summary}</p>
 
         <div className="mt-7 space-y-5">
           <div>
-            <p className="type-label text-white/50">Evidence snippets</p>
+            <p className="type-label text-muted">Evidence snippets</p>
             <ul className="mt-3 space-y-2">
               {selectedNode.evidence.map((item) => (
-                <li key={item} className="type-body-lg-300 text-white/60">
+                <li key={item} className="type-body-lg-300 text-faint">
                   {item}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <p className="type-label text-white/50">Related documents</p>
+            <p className="type-label text-muted">Related documents</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {selectedNode.relatedDocuments.map((item) => (
-                <span key={item} className="surface-chip px-3 py-1 text-white/70">
+                <span key={item} className="status-pill px-3 py-1">
                   {item}
                 </span>
               ))}
             </div>
           </div>
           <div>
-            <p className="type-label text-white/50">Related skills</p>
+            <p className="type-label text-muted">Related skills</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {selectedNode.relatedSkills.map((item) => (
-                <span key={item} className="surface-chip px-3 py-1 text-white/70">
+                <span key={item} className="status-pill px-3 py-1">
                   {item}
                 </span>
               ))}
             </div>
           </div>
           <div>
-            <p className="type-label text-white/50">Connected nodes</p>
+            <p className="type-label text-muted">Connected nodes</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {selectedNode.connectedNodes.map((item) => (
-                <span key={item} className="surface-chip px-3 py-1 text-white/70">
+                <span key={item} className="status-pill px-3 py-1">
                   {item}
                 </span>
               ))}

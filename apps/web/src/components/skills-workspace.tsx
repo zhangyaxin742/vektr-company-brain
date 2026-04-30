@@ -16,29 +16,29 @@ export function SkillsWorkspace() {
             key={skill.id}
             type="button"
             onClick={() => setSelectedSkillId(skill.id)}
-            className={`surface-card flex w-full flex-col items-start gap-4 p-5 text-left transition ${
-              skill.id === selectedSkillId ? "border-white/18 bg-white/[0.08]" : ""
+            className={`surface-card flex w-full flex-col items-start gap-4 p-5 text-left ${
+              skill.id === selectedSkillId ? "status-pill-strong" : ""
             }`}
           >
             <div className="flex w-full flex-wrap items-start justify-between gap-4">
               <div className="space-y-2">
-                <h2 className="type-heading-06 text-white">{skill.name}</h2>
-                <p className="type-body-lg-300 text-white/50">{skill.trigger}</p>
+                <h2 className="type-heading-06">{skill.name}</h2>
+                <p className="type-body-lg-300 text-muted">{skill.trigger}</p>
               </div>
-              <span className="surface-chip px-3 py-1 text-white/70">{skill.status}</span>
+              <span className="status-pill px-3 py-1">{skill.status}</span>
             </div>
             <div className="grid w-full gap-3 sm:grid-cols-3">
               <div>
-                <p className="type-label text-white/50">Confidence</p>
-                <p className="mt-1 type-body-xxl-400 text-white">{skill.confidence}</p>
+                <p className="type-label text-muted">Confidence</p>
+                <p className="mt-1 type-body-xxl-400">{skill.confidence}</p>
               </div>
               <div>
-                <p className="type-label text-white/50">Approval</p>
-                <p className="mt-1 type-body-xxl-400 text-white">{skill.approval}</p>
+                <p className="type-label text-muted">Approval</p>
+                <p className="mt-1 type-body-xxl-400">{skill.approval}</p>
               </div>
               <div>
-                <p className="type-label text-white/50">Sources</p>
-                <p className="mt-1 type-body-xxl-400 text-white">{skill.sources}</p>
+                <p className="type-label text-muted">Sources</p>
+                <p className="mt-1 type-body-xxl-400">{skill.sources}</p>
               </div>
             </div>
           </button>
@@ -48,78 +48,78 @@ export function SkillsWorkspace() {
       <aside className="surface-panel p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
-            <p className="type-label text-white/50">Draft skill detail</p>
-            <h2 className="type-heading-04 text-white">{selectedSkill.name}</h2>
-            <p className="type-body-lg-300 text-white/50">
+            <p className="type-label text-muted">Draft skill detail</p>
+            <h2 className="type-heading-04">{selectedSkill.name}</h2>
+            <p className="type-body-lg-300 text-muted">
               Version {selectedSkill.version} | {selectedSkill.status} | {selectedSkill.confidence}
             </p>
           </div>
           <div className="flex gap-2">
-            <span className="surface-chip px-3 py-1 text-white/70">Export JSON</span>
-            <span className="surface-chip px-3 py-1 text-white/70">Approve</span>
+            <span className="status-pill px-3 py-1">Export JSON</span>
+            <span className="status-pill px-3 py-1">Approve</span>
           </div>
         </div>
 
         <div className="mt-7 grid gap-6 lg:grid-cols-2">
           <div>
-            <p className="type-label text-white/50">Trigger</p>
-            <p className="mt-2 type-body-xxl-300 text-white/70">{selectedSkill.trigger}</p>
+            <p className="type-label text-muted">Trigger</p>
+            <p className="mt-2 type-body-xxl-300 text-soft">{selectedSkill.trigger}</p>
           </div>
           <div>
-            <p className="type-label text-white/50">Inputs required</p>
+            <p className="type-label text-muted">Inputs required</p>
             <ul className="mt-2 space-y-1">
               {selectedSkill.inputsRequired.map((item) => (
-                <li key={item} className="type-body-lg-300 text-white/70">
+                <li key={item} className="type-body-lg-300 text-soft">
                   {item}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <p className="type-label text-white/50">Steps</p>
+            <p className="type-label text-muted">Steps</p>
             <ol className="mt-2 space-y-2">
               {selectedSkill.steps.map((item, index) => (
-                <li key={item} className="type-body-lg-300 text-white/70">
+                <li key={item} className="type-body-lg-300 text-soft">
                   {index + 1}. {item}
                 </li>
               ))}
             </ol>
           </div>
           <div>
-            <p className="type-label text-white/50">Approval gates</p>
+            <p className="type-label text-muted">Approval gates</p>
             <ul className="mt-2 space-y-2">
               {selectedSkill.approvalGates.map((gate) => (
-                <li key={gate.gate} className="type-body-lg-300 text-white/70">
+                <li key={gate.gate} className="type-body-lg-300 text-soft">
                   {gate.gate}: {gate.requiredWhen}
                 </li>
               ))}
             </ul>
           </div>
           <div>
-            <p className="type-label text-white/50">Allowed actions</p>
+            <p className="type-label text-muted">Allowed actions</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {selectedSkill.allowedActions.map((item) => (
-                <span key={item} className="surface-chip px-3 py-1 text-white/70">
+                <span key={item} className="status-pill px-3 py-1">
                   {item}
                 </span>
               ))}
             </div>
           </div>
           <div>
-            <p className="type-label text-white/50">Forbidden actions</p>
+            <p className="type-label text-muted">Forbidden actions</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {selectedSkill.forbiddenActions.map((item) => (
-                <span key={item} className="surface-chip px-3 py-1 text-white/70">
+                <span key={item} className="status-pill px-3 py-1">
                   {item}
                 </span>
               ))}
             </div>
           </div>
           <div className="lg:col-span-2">
-            <p className="type-label text-white/50">Source citations</p>
+            <p className="type-label text-muted">Source citations</p>
             <ul className="mt-2 space-y-2">
               {selectedSkill.sourceCitations.map((item) => (
-                <li key={item} className="type-body-lg-300 text-white/70">
+                <li key={item} className="type-body-lg-300 text-soft">
                   {item}
                 </li>
               ))}

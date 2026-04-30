@@ -23,28 +23,29 @@ const sectionIcons = [FileStack, GitBranch, Database, ArrowRight, ShieldAlert];
 export default function LandingPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-[1280px] flex-col gap-18 px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
-      <header className="surface-panel flex items-center justify-between gap-4 px-5 py-4">
+      <header className="surface-panel flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <span className="inline-flex size-10 items-center justify-center rounded-full border border-white/10 bg-white/6 text-sm font-medium text-white">
-            V
-          </span>
+          <span className="brand-mark size-10 text-sm font-medium">V</span>
           <div>
-            <p className="type-body-lg-400 text-white">Vektr</p>
-            <p className="type-label text-white/50">The company brain for AI agents.</p>
+            <p className="type-body-lg-400">Vektr</p>
+            <p className="type-label text-muted">The company brain for AI agents.</p>
           </div>
         </Link>
-        <nav className="hidden items-center gap-6 lg:flex">
-          <Link href="/graph" className="type-body-lg-300 text-white/70 transition hover:text-white">
-            Graph
+        <nav className="-mx-1 flex w-full max-w-full items-center gap-1 overflow-x-auto px-1 py-1 sm:w-auto sm:gap-2">
+          <Link href="/graph" className="nav-pill nav-pill-inactive shrink-0 px-4 py-2">
+            <span className="type-body-lg-300">Graph</span>
           </Link>
-          <Link href="/skills" className="type-body-lg-300 text-white/70 transition hover:text-white">
-            Skills
+          <Link href="/skills" className="nav-pill nav-pill-inactive shrink-0 px-4 py-2">
+            <span className="type-body-lg-300">Skills</span>
           </Link>
-          <Link href="/ask" className="type-body-lg-300 text-white/70 transition hover:text-white">
-            Ask
+          <Link href="/ask" className="nav-pill nav-pill-inactive shrink-0 px-4 py-2">
+            <span className="type-body-lg-300">Ask</span>
           </Link>
-          <Link href="/health" className="type-body-lg-300 text-white/70 transition hover:text-white">
-            Health
+          <Link href="/health" className="nav-pill nav-pill-inactive shrink-0 px-4 py-2">
+            <span className="type-body-lg-300">Health</span>
+          </Link>
+          <Link href="/demo" className="nav-pill nav-pill-active shrink-0 px-4 py-2">
+            <span className="type-body-lg-300">Demo</span>
           </Link>
         </nav>
       </header>
@@ -52,20 +53,20 @@ export default function LandingPage() {
       <section className="grid gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:items-center">
         <div className="space-y-7">
           <div className="flex flex-wrap items-center gap-3">
-            <Badge className="surface-chip border-white/10 bg-white/6 px-3 py-1 text-white hover:bg-white/6">
+            <Badge className="surface-chip px-3 py-1">
               The company brain for AI agents.
             </Badge>
-            <Badge className="surface-chip border-white/10 bg-transparent px-3 py-1 text-white/60 hover:bg-transparent">
+            <Badge className="surface-chip bg-transparent px-3 py-1 text-faint hover:bg-transparent">
               YC Company Brain demo
             </Badge>
           </div>
           <div className="space-y-5">
-            <p className="type-label text-white/50">Your company brain, mapped.</p>
-            <h1 className="type-heading-01 max-w-4xl text-balance text-white">
+            <p className="type-label text-muted">Your company brain, mapped.</p>
+            <h1 className="type-heading-01 max-w-4xl text-balance">
               Vektr turns Slack threads, emails, docs, and tickets into a living
               operating graph, then generates executable skills for AI agents.
             </h1>
-            <p className="type-body-xxl-300 max-w-2xl text-white/50">
+            <p className="type-body-xxl-300 max-w-2xl text-muted">
               This sprint build centers on Acme Labs and the TeraCorp refund
               dispute. Lead with graph + skills, answer with citations, and
               surface conflicts before an agent acts.
@@ -85,12 +86,12 @@ export default function LandingPage() {
 
           return (
             <article key={section.title} className="surface-card flex flex-col gap-4 p-5">
-              <span className="inline-flex size-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80">
+              <span className="surface-icon size-11">
                 <Icon className="size-5" />
               </span>
               <div className="space-y-2">
-                <h2 className="type-heading-06 text-white">{section.title}</h2>
-                <p className="type-body-lg-300 text-white/50">{section.description}</p>
+                <h2 className="type-heading-06">{section.title}</h2>
+                <p className="type-body-lg-300 text-muted">{section.description}</p>
               </div>
             </article>
           );
@@ -102,9 +103,9 @@ export default function LandingPage() {
         className="surface-panel flex flex-col gap-6 px-6 py-6 sm:px-7 sm:py-7"
       >
         <div className="space-y-2">
-          <p className="type-label text-white/50">Connector-looking interface</p>
-          <h2 className="type-heading-04 text-white">Messy inputs in, operating graph out.</h2>
-          <p className="type-body-xxl-300 max-w-2xl text-white/50">
+          <p className="type-label text-muted">Connector-looking interface</p>
+          <h2 className="type-heading-04">Messy inputs in, operating graph out.</h2>
+          <p className="type-body-xxl-300 max-w-2xl text-muted">
             For the sprint, real OAuth is intentionally out of scope. Show the
             future integration surface without blocking the demo.
           </p>
@@ -116,10 +117,10 @@ export default function LandingPage() {
               className="surface-card flex items-center justify-between gap-4 p-4"
             >
               <div>
-                <p className="type-body-xxl-400 text-white">{connector}</p>
-                <p className="type-body-lg-300 text-white/50">Coming soon / Join waitlist</p>
+                <p className="type-body-xxl-400">{connector}</p>
+                <p className="type-body-lg-300 text-muted">Coming soon / Join waitlist</p>
               </div>
-              <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/60">
+              <span className="status-pill px-3 py-1 type-label text-faint">
                 Soon
               </span>
             </div>

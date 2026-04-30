@@ -1,6 +1,9 @@
+import { getPublicEnv } from "@/lib/env/public";
+
 export function getSupabaseEnv() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const env = getPublicEnv();
+  const url = env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey = env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!url || !publishableKey) {
     throw new Error(
@@ -12,5 +15,5 @@ export function getSupabaseEnv() {
 }
 
 export function getAppUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://127.0.0.1:3000";
+  return getPublicEnv().NEXT_PUBLIC_APP_URL ?? "http://127.0.0.1:3000";
 }

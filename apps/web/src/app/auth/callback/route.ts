@@ -2,10 +2,18 @@ import { NextResponse } from "next/server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+function normalizeNextPath(nextInput: string | null) {
+  if (!nextInput || !nextInput.startsWith("/")) {
+    return "/graph";
+  }
+
+  return nextInput;
+}
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/graph";
+  const next = normalizeNextPath(requestUrl.searchParams.get("next"));
 
   if (!code) {
     const signInUrl = new URL("/auth/sign-in", request.url);

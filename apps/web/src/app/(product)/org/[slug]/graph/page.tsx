@@ -12,27 +12,10 @@ type GraphPageProps = {
 
 export default async function GraphPage({ params }: GraphPageProps) {
   const { slug } = await params;
+  let snapshot;
 
   try {
-    const snapshot = await getWorkspaceSnapshot(slug);
-
-    return (
-      <AppPage
-        eyebrow="Operating graph"
-        title="Inspect how the workspace actually works."
-        description="The graph surface remains a shell in this slice, but access now resolves through authenticated org membership and real workspace counts."
-        actions={
-          <WorkspaceSummaryCard
-            counts={snapshot.counts}
-            organizationName={snapshot.org.name}
-            recentDocuments={snapshot.recentDocuments}
-            role={snapshot.membership.role}
-          />
-        }
-      >
-        <GraphWorkspace />
-      </AppPage>
-    );
+    snapshot = await getWorkspaceSnapshot(slug);
   } catch (error) {
     if (error instanceof NotFoundError) {
       notFound();
@@ -40,4 +23,22 @@ export default async function GraphPage({ params }: GraphPageProps) {
 
     throw error;
   }
+
+  return (
+    <AppPage
+      eyebrow="Operating graph"
+      title="Inspect how the workspace actually works."
+      description="The graph surface remains a shell in this slice, but access now resolves through authenticated org membership and real workspace counts."
+      actions={
+        <WorkspaceSummaryCard
+          counts={snapshot.counts}
+          organizationName={snapshot.org.name}
+          recentDocuments={snapshot.recentDocuments}
+          role={snapshot.membership.role}
+        />
+      }
+    >
+      <GraphWorkspace />
+    </AppPage>
+  );
 }

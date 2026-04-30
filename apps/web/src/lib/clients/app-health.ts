@@ -1,3 +1,4 @@
+import { appHealthResponseSchema } from "@/lib/types";
 import type { AppHealthResponse } from "@/lib/types";
 
 export async function getAppHealth(baseUrl = ""): Promise<AppHealthResponse> {
@@ -9,5 +10,5 @@ export async function getAppHealth(baseUrl = ""): Promise<AppHealthResponse> {
     throw new Error(`App health request failed with ${response.status}.`);
   }
 
-  return (await response.json()) as AppHealthResponse;
+  return appHealthResponseSchema.parse(await response.json());
 }

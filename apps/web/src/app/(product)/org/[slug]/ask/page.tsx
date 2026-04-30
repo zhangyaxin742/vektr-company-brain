@@ -12,27 +12,10 @@ type AskPageProps = {
 
 export default async function AskPage({ params }: AskPageProps) {
   const { slug } = await params;
+  let snapshot;
 
   try {
-    const snapshot = await getWorkspaceSnapshot(slug);
-
-    return (
-      <AppPage
-        eyebrow="Citation-first answers"
-        title="Ask operational questions with evidence."
-        description="The retrieval and answer loop still lands later in the sprint, but auth, org scoping, and workspace context are now loaded through the server DAL."
-        actions={
-          <WorkspaceSummaryCard
-            counts={snapshot.counts}
-            organizationName={snapshot.org.name}
-            recentDocuments={snapshot.recentDocuments}
-            role={snapshot.membership.role}
-          />
-        }
-      >
-        <AskWorkspace />
-      </AppPage>
-    );
+    snapshot = await getWorkspaceSnapshot(slug);
   } catch (error) {
     if (error instanceof NotFoundError) {
       notFound();
@@ -40,4 +23,22 @@ export default async function AskPage({ params }: AskPageProps) {
 
     throw error;
   }
+
+  return (
+    <AppPage
+      eyebrow="Citation-first answers"
+      title="Ask operational questions with evidence."
+      description="The retrieval and answer loop still lands later in the sprint, but auth, org scoping, and workspace context are now loaded through the server DAL."
+      actions={
+        <WorkspaceSummaryCard
+          counts={snapshot.counts}
+          organizationName={snapshot.org.name}
+          recentDocuments={snapshot.recentDocuments}
+          role={snapshot.membership.role}
+        />
+      }
+    >
+      <AskWorkspace />
+    </AppPage>
+  );
 }

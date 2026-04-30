@@ -74,8 +74,8 @@ const edges: Edge[] = [
 export function GraphPreview() {
   return (
     <div className="surface-panel h-[460px] overflow-hidden p-4">
-      <div className="gradient-frame h-full rounded-[28px] p-px">
-        <div className="h-full overflow-hidden rounded-[28px] bg-[#101010]">
+      <div className="gradient-frame h-full rounded-4xl p-px">
+        <div className="surface-stage-inner h-full overflow-hidden rounded-4xl">
           <ReactFlow
             fitView
             nodes={nodes}

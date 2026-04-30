@@ -23,10 +23,10 @@ export function ProductNav() {
             key={href}
             href={href}
             className={cn(
-              "shrink-0 rounded-full px-4 py-2 transition",
+              "nav-pill shrink-0 px-4 py-2",
               active
-                ? "border border-white/12 bg-white/8 text-white"
-                : "text-white/55 hover:bg-white/5 hover:text-white",
+                ? "nav-pill-active"
+                : "nav-pill-inactive",
             )}
           >
             <span className="type-body-lg-300">{item.label}</span>

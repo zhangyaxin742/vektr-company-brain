@@ -23,14 +23,14 @@ export default function DemoPage() {
               <article key={metric.label} className="surface-card p-5">
                 <div className="mb-5 flex items-start justify-between gap-4">
                   <div>
-                    <p className="type-body-lg-300 text-white/50">{metric.label}</p>
-                    <p className="type-heading-05 mt-2 text-white">{metric.value}</p>
+                    <p className="type-body-lg-300 text-muted">{metric.label}</p>
+                    <p className="type-heading-05 mt-2">{metric.value}</p>
                   </div>
-                  <span className="inline-flex size-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80">
+                  <span className="surface-icon size-11">
                     <Icon className="size-5" />
                   </span>
                 </div>
-                <p className="type-body-lg-300 text-white/50">{metric.detail}</p>
+                <p className="type-body-lg-300 text-muted">{metric.detail}</p>
               </article>
             );
           })}
@@ -38,10 +38,10 @@ export default function DemoPage() {
 
         <aside className="surface-panel p-6">
           <div className="space-y-2">
-            <p className="type-label text-white/50">Final state</p>
-            <h2 className="type-heading-04 text-white">Acme Labs Brain Ready</h2>
-            <p className="type-body-xxl-300 text-white/50">
-              This remains static in Session A, but the shape mirrors the PRD's
+            <p className="type-label text-muted">Final state</p>
+            <h2 className="type-heading-04">Acme Labs Brain Ready</h2>
+            <p className="type-body-xxl-300 text-muted">
+              This remains static in Session A, but the shape mirrors the PRD&apos;s
               target ingestion flow and gives later sessions a fixed UI contract.
             </p>
           </div>
@@ -49,14 +49,14 @@ export default function DemoPage() {
             {demoTimeline.map((item, index) => (
               <div key={item} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <span className="inline-flex size-9 items-center justify-center rounded-full border border-white/10 bg-white/6 text-xs font-medium text-white">
+                  <span className="surface-icon size-9 text-xs font-medium">
                     {index + 1}
                   </span>
                   {index < demoTimeline.length - 1 ? (
-                    <span className="mt-2 h-full w-px bg-white/10" />
+                    <span className="surface-divider mt-2 h-full w-px" />
                   ) : null}
                 </div>
-                <p className="type-body-xxl-300 pt-1 text-white/70">{item}</p>
+                <p className="type-body-xxl-300 pt-1 text-soft">{item}</p>
               </div>
             ))}
           </div>

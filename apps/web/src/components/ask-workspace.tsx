@@ -14,17 +14,17 @@ export function AskWorkspace() {
     <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
       <div className="surface-panel p-6">
         <div className="space-y-4">
-          <p className="type-label text-white/50">Required demo prompts</p>
+          <p className="type-label text-muted">Required demo prompts</p>
           <div className="grid gap-3">
             {askPrompts.map((prompt) => (
               <button
                 key={prompt}
                 type="button"
                 onClick={() => setActivePrompt(prompt)}
-                className={`rounded-[28px] border px-4 py-4 text-left transition ${
+                className={`surface-interactive px-4 py-4 text-left ${
                   activePrompt === prompt
-                    ? "border-white/18 bg-white/8 text-white"
-                    : "border-white/10 bg-white/4 text-white/70 hover:bg-white/6 hover:text-white"
+                    ? "surface-interactive-active"
+                    : "surface-interactive-muted"
                 }`}
               >
                 <p className="type-body-xxl-300">{prompt}</p>
@@ -33,40 +33,40 @@ export function AskWorkspace() {
           </div>
         </div>
 
-        <div className="mt-7 space-y-4 rounded-[28px] border border-white/10 bg-black/40 p-5">
+        <div className="surface-stage mt-7 space-y-4 p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="type-body-lg-300 text-white/50">Answer</p>
-            <span className="surface-chip px-3 py-1 text-white/70">
+            <p className="type-body-lg-300 text-muted">Answer</p>
+            <span className="status-pill px-3 py-1">
               Confidence {answer.confidence}
             </span>
           </div>
-          <h2 className="type-heading-06 text-white">{answer.answer}</h2>
-          <p className="type-body-xxl-300 text-white/60">{answer.missingInfo}</p>
-          <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
-            <p className="type-label text-white/50">Suggested skill</p>
-            <p className="mt-2 type-body-xxl-400 text-white">{answer.suggestedSkill}</p>
+          <h2 className="type-heading-06">{answer.answer}</h2>
+          <p className="type-body-xxl-300 text-faint">{answer.missingInfo}</p>
+          <div className="surface-well-soft p-4">
+            <p className="type-label text-muted">Suggested skill</p>
+            <p className="mt-2 type-body-xxl-400">{answer.suggestedSkill}</p>
           </div>
         </div>
       </div>
 
       <aside className="space-y-4">
         <div className="surface-panel p-6">
-          <p className="type-label text-white/50">Citations</p>
+          <p className="type-label text-muted">Citations</p>
           <div className="mt-4 space-y-3">
             {answer.citations.map((citation) => (
               <article key={citation.title} className="surface-card p-4">
-                <p className="type-body-xxl-400 text-white">{citation.title}</p>
-                <p className="mt-2 type-body-lg-300 text-white/60">{citation.snippet}</p>
+                <p className="type-body-xxl-400">{citation.title}</p>
+                <p className="mt-2 type-body-lg-300 text-faint">{citation.snippet}</p>
               </article>
             ))}
           </div>
         </div>
 
         <div className="surface-panel p-6">
-          <p className="type-label text-white/50">Related graph nodes</p>
+          <p className="type-label text-muted">Related graph nodes</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {answer.relatedNodes.map((node) => (
-              <span key={node.id} className="surface-chip px-3 py-1 text-white/70">
+              <span key={node.id} className="status-pill px-3 py-1">
                 {node.label}
               </span>
             ))}

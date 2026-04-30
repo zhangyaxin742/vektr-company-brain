@@ -1,5 +1,14 @@
 import type { Edge } from "@xyflow/react";
 
+import {
+  askAnswerMapSchema,
+  demoMetricSchema,
+  graphNodeDetailSchema,
+  graphNodeKindSchema,
+  healthFlagSchema,
+  landingSectionSchema,
+  skillDetailSchema,
+} from "@/lib/types";
 import type {
   AskAnswerMap,
   DemoMetric,
@@ -10,7 +19,7 @@ import type {
   SkillDetail,
 } from "@/lib/types";
 
-export const landingSections: LandingSection[] = [
+export const landingSections: LandingSection[] = landingSectionSchema.array().parse([
   {
     title: "Upload messy company artifacts",
     description:
@@ -36,9 +45,9 @@ export const landingSections: LandingSection[] = [
     description:
       "Flag contradictions, stale workflows, low-confidence links, and unapproved skills before they hurt execution.",
   },
-];
+]);
 
-export const demoMetrics: DemoMetric[] = [
+export const demoMetrics: DemoMetric[] = demoMetricSchema.array().parse([
   { label: "Documents processed", value: "12", detail: "Slack, email, docs, and policy sources normalized." },
   { label: "Chunks embedded", value: "184", detail: "Citation units ready for retrieval once the vector layer is wired." },
   { label: "Entities extracted", value: "67", detail: "People, customers, incidents, decisions, policies, skills." },
@@ -46,7 +55,7 @@ export const demoMetrics: DemoMetric[] = [
   { label: "Communities generated", value: "8", detail: "Operational clusters the global graph view can summarize later." },
   { label: "Skills generated", value: "5", detail: "Draft skills that can later be produced by the generation pipeline." },
   { label: "Health flags detected", value: "6", detail: "Conflicts, stale workflows, missing owners, and unapproved skills." },
-];
+]);
 
 export const demoTimeline = [
   "Acme Labs documents ingested into the workspace.",
@@ -63,7 +72,7 @@ export const askPrompts = [
   "What are the biggest operational risks in Acme Labs right now?",
 ] as const;
 
-export const askAnswers: AskAnswerMap = {
+export const askAnswers: AskAnswerMap = askAnswerMapSchema.parse({
   "How do we handle enterprise refund requests after an outage?": {
     answer:
       "Acknowledge the request, gather account context, route through sales and finance, then escalate strategic exceptions to the CEO before the CSM sends the final response.",
@@ -158,9 +167,9 @@ export const askAnswers: AskAnswerMap = {
     missingInfo: "The risk ranking is still based on static demo data, not live scoring.",
     suggestedSkill: "Knowledge Health Review",
   },
-};
+});
 
-export const graphFilters: GraphNodeKind[] = [
+export const graphFilters: GraphNodeKind[] = graphNodeKindSchema.array().parse([
   "people",
   "customers",
   "incidents",
@@ -171,9 +180,9 @@ export const graphFilters: GraphNodeKind[] = [
   "skills",
   "documents",
   "communities",
-];
+]);
 
-export const graphNodeDetails: GraphNodeDetail[] = [
+export const graphNodeDetails: GraphNodeDetail[] = graphNodeDetailSchema.array().parse([
   {
     id: "teracorp-refund",
     label: "TeraCorp Refund Request",
@@ -308,7 +317,7 @@ export const graphNodeDetails: GraphNodeDetail[] = [
     position: { x: 560, y: 476 },
     width: 280,
   },
-];
+]);
 
 export const graphEdges: Edge[] = [
   { id: "edge-1", source: "nov-3-outage", target: "teracorp-refund", label: "caused", animated: true },
@@ -323,7 +332,7 @@ export const graphEdges: Edge[] = [
   { id: "edge-10", source: "renewal-risk", target: "revenue-community", label: "belongs to" },
 ];
 
-export const skills: SkillDetail[] = [
+export const skills: SkillDetail[] = skillDetailSchema.array().parse([
   {
     id: "enterprise-refund-handling",
     name: "Enterprise Refund Handling",
@@ -436,9 +445,9 @@ export const skills: SkillDetail[] = [
     forbiddenActions: ["promise_pricing", "create_contract_terms"],
     sourceCitations: ["Sales ops guide"],
   },
-];
+]);
 
-export const healthFlags: HealthFlag[] = [
+export const healthFlags: HealthFlag[] = healthFlagSchema.array().parse([
   {
     id: "refund-conflict",
     severity: "critical",
@@ -503,4 +512,4 @@ export const healthFlags: HealthFlag[] = [
     evidence: ["CSM notes describe trust damage and renewal pressure."],
     suggestedFix: "Capture the final resolution and follow-up sequence in the skill set.",
   },
-];
+]);

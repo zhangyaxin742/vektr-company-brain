@@ -1,11 +1,14 @@
+import "server-only";
+
 import { createClient } from "@supabase/supabase-js";
 
+import { getServerEnv } from "@/lib/env/server";
 import type { Database } from "@/lib/supabase/database.types";
 import { getSupabaseEnv } from "@/lib/supabase/shared";
 
 export function createSupabaseAdminClient() {
   const { url } = getSupabaseEnv();
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const { SUPABASE_SERVICE_ROLE_KEY: serviceRoleKey } = getServerEnv();
 
   if (!serviceRoleKey) {
     throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY.");

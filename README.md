@@ -1,14 +1,15 @@
 # Vektr Company Brain
 
-Hour `0-1` now has a runnable split scaffold:
+Hour `0-3` now has a runnable split scaffold plus the first authenticated Supabase slice:
 
-- `apps/web`: Next.js 16 App Router frontend with Tailwind v4, shadcn/ui, React Flow, a full Session A app shell, typed client boundaries, Supabase utilities, Neo4j health checks, and `/api/health`.
+- `apps/web`: Next.js 16 App Router frontend with Tailwind v4, shadcn/ui, React Flow, org-scoped Supabase SSR auth, server-only DAL modules, and `/api/health`.
 - `worker`: FastAPI worker with connector health routes, PRD-aligned stub endpoints, direct Supabase Postgres checks, and Neo4j AuraDB checks.
 
 ## Repo layout
 
 ```text
 apps/web   Next.js frontend
+supabase   SQL migrations
 worker     FastAPI worker
 docs       Project memory and sprint notes
 ```
@@ -26,8 +27,11 @@ docs       Project memory and sprint notes
 cd apps/web
 Copy-Item .env.example .env.local
 npm.cmd install
+cd ..\..
 npm.cmd run dev
 ```
+
+If you prefer to stay in the app directory, `cd apps/web && npm.cmd run dev` still works. The repo root `package.json` exists so `npm run dev` does not escape upward into an unrelated parent directory.
 
 The web app serves at `http://127.0.0.1:3000`.
 
@@ -35,12 +39,19 @@ Routes:
 
 ```text
 /
+/auth/sign-in
 /demo
 /ask
 /graph
 /skills
 /health
+/org/[slug]/graph
+/org/[slug]/skills
+/org/[slug]/ask
+/org/[slug]/health
 ```
+
+Legacy `/ask`, `/graph`, `/skills`, and `/health` now redirect authenticated users to their default organization route and redirect unauthenticated users to magic-link sign-in.
 
 Health endpoint:
 
@@ -73,6 +84,7 @@ GET /worker/health/connectors
 
 - `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL used by the frontend.
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Supabase publishable key for browser-safe project access.
+- `NEXT_PUBLIC_APP_URL`: app origin used for Supabase magic-link callbacks.
 - `SUPABASE_SERVICE_ROLE_KEY`: optional server-only key for admin routes and deeper server-side checks.
 - `NEO4J_URI`: Neo4j URI. Aura normally uses `neo4j+s://...`.
 - `NEO4J_USERNAME`: Neo4j username, usually `neo4j`.
@@ -90,20 +102,20 @@ GET /worker/health/connectors
 
 ## Connector notes
 
-- The Next.js app uses Supabase's project URL plus publishable key pattern for frontend-safe access.
+- The Next.js app uses Supabase SSR auth with `proxy.ts`, request-scoped server clients, and org-scoped routes under `/org/[slug]`.
+- The service role key remains server-only and should not be used for normal user request-path reads.
 - The FastAPI worker uses a direct Postgres connection string for Supabase DB verification because backend application traffic should use a proper Postgres connection instead of browser-oriented data APIs.
 - Neo4j Aura should be configured with a `neo4j+s://` URI unless your instance explicitly requires another supported scheme.
-- The Session A shell intentionally stops short of treating database auth as complete until real env credentials are provided and the health checks return `ready`.
+- Apply the SQL migration in `supabase/migrations/20260430130000_init_auth_rls.sql` before testing the authenticated routes.
 
 ## Verification
 
 Run these after filling in env files:
 
 ```powershell
-cd apps/web
 npm.cmd run build
 
-cd ..\worker
+cd worker
 .\.venv\Scripts\python.exe -m compileall app
 ```
 
