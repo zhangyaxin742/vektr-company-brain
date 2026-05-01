@@ -1,0 +1,34 @@
+{
+  "vendor": "Dataflow",
+  "renewal_date": "2025-12-15",
+  "annual_cost_usd": 24000,
+  "status": "at_risk",
+  "owner": null,
+  "stakeholders": [
+    {
+      "name": "Priya Raman",
+      "team": "Support Operations",
+      "role_in_thread": "temporary coordinator"
+    },
+    {
+      "name": "Femi Adebayo",
+      "team": "Finance",
+      "role_in_thread": "budget approver"
+    },
+    {
+      "name": "Nina Park",
+      "team": "Security",
+      "role_in_thread": "requested for diligence review"
+    }
+  ],
+  "notes": [
+    "Procurement checklist still points to Support Ops for vendor packet assembly.",
+    "Security believes procurement should own the final response package.",
+    "Renewal prep started late because the request was routed through the same exception path used for customer escalations."
+  ],
+  "risks": [
+    "No single accountable owner",
+    "Budget approval and security diligence are happening in parallel without a clear gate",
+    "Commercial workflow does not match the onboarding guide"
+  ]
+}

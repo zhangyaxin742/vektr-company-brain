@@ -1,0 +1,55 @@
+{
+  "workspace": "acme",
+  "channel": "customer-success",
+  "exported_at": "2025-11-05T18:10:00Z",
+  "messages": [
+    {
+      "ts": "2025-11-04T14:06:00Z",
+      "user": "Marcus Nwosu",
+      "role": "Customer Success Manager",
+      "text": "Opening a thread on TeraCorp. They pay $48k/year and are asking for a two-month refund after the Nov 3 outage."
+    },
+    {
+      "ts": "2025-11-04T14:08:00Z",
+      "user": "Leila Chen",
+      "role": "Support Lead",
+      "text": "Tagging @jordan-kim for approval since this is already heated."
+    },
+    {
+      "ts": "2025-11-04T14:09:00Z",
+      "user": "Leila Chen",
+      "role": "Support Lead",
+      "text": "Wrong person. I meant @jordan-mee. Pulling Priya in too because this is crossing from support into retention."
+    },
+    {
+      "ts": "2025-11-04T14:12:00Z",
+      "user": "Priya Raman",
+      "role": "Head of Support Operations",
+      "text": "I am in. From the incident channel I have customer-visible impact at about 3h47m, though the postmortem will probably round it to four hours."
+    },
+    {
+      "ts": "2025-11-04T14:16:00Z",
+      "user": "Marcus Nwosu",
+      "role": "Customer Success Manager",
+      "text": "Customer wording was explicit: 'We expect two full months refunded or credited.' They tied it to lost launch time and trust."
+    },
+    {
+      "ts": "2025-11-04T14:21:00Z",
+      "user": "Femi Adebayo",
+      "role": "Finance Director",
+      "text": "Two months is too rich. Policy gives us room for 30 days at the high end, not 60. We should not anchor the customer there."
+    },
+    {
+      "ts": "2025-11-04T14:24:00Z",
+      "user": "Priya Raman",
+      "role": "Head of Support Operations",
+      "text": "Agree we should not promise anything in Slack. Marcus, tell them we are reviewing options after the four-hour outage."
+    },
+    {
+      "ts": "2025-11-04T14:31:00Z",
+      "user": "Marcus Nwosu",
+      "role": "Customer Success Manager",
+      "text": "Understood. I will hold the line and move this to email with Jordan and Femi."
+    }
+  ]
+}

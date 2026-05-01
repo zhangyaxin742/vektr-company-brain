@@ -1,0 +1,94 @@
+{
+  "org": "Acme",
+  "exported_at": "2025-11-06T08:45:00Z",
+  "threads": [
+    {
+      "thread_id": "teracorp-refund-escalation",
+      "subject": "TeraCorp refund request after Nov 3 outage",
+      "participants": [
+        "Marcus Nwosu",
+        "Priya Raman",
+        "Femi Adebayo",
+        "Jordan Mee"
+      ],
+      "messages": [
+        {
+          "sent_at": "2025-11-04T14:38:00Z",
+          "from": "Marcus Nwosu",
+          "to": [
+            "Priya Raman",
+            "Femi Adebayo",
+            "Jordan Mee"
+          ],
+          "body": "Opening a formal thread after Slack. TeraCorp is a $48k/year account. They are asking for a two-month refund or equivalent credit because the Nov 3 outage disrupted a customer launch window."
+        },
+        {
+          "sent_at": "2025-11-04T15:02:00Z",
+          "from": "Priya Raman",
+          "to": [
+            "Marcus Nwosu",
+            "Femi Adebayo",
+            "Jordan Mee"
+          ],
+          "body": "I reviewed the incident notes. Customer-facing degradation lasted roughly four hours, though the raw timeline reads closer to 3h58m. TeraCorp had repeated escalations during that window."
+        },
+        {
+          "sent_at": "2025-11-04T15:14:00Z",
+          "from": "Femi Adebayo",
+          "to": [
+            "Marcus Nwosu",
+            "Priya Raman",
+            "Jordan Mee"
+          ],
+          "body": "Pushing back on the amount. Two months is outside policy and well above what we have granted on similar outages. I can support 30 days of service credit, not a cash refund."
+        },
+        {
+          "sent_at": "2025-11-04T15:42:00Z",
+          "from": "Jordan Mee",
+          "to": [
+            "Marcus Nwosu",
+            "Priya Raman",
+            "Femi Adebayo"
+          ],
+          "body": "Final call: treat this as a strategic retention exception. Offer six weeks of service credit, not cash, and position it as recognition of the outage plus a reset of trust. Marcus sends the note after Priya reviews wording."
+        },
+        {
+          "sent_at": "2025-11-04T15:49:00Z",
+          "from": "Marcus Nwosu",
+          "to": [
+            "Jordan Mee",
+            "Priya Raman",
+            "Femi Adebayo"
+          ],
+          "body": "Understood. I will tell TeraCorp we cannot do the full two months they demanded, but we can extend a six-week credit approved by leadership."
+        }
+      ]
+    },
+    {
+      "thread_id": "customer-inbound-teracorp",
+      "subject": "RE: Service interruption and next steps",
+      "participants": [
+        "Dana Holt",
+        "Marcus Nwosu"
+      ],
+      "messages": [
+        {
+          "sent_at": "2025-11-04T13:51:00Z",
+          "from": "Dana Holt",
+          "to": [
+            "Marcus Nwosu"
+          ],
+          "body": "The Nov 3 outage lasted most of the morning for our team, cost us a planned rollout, and damaged confidence. We expect two months refunded."
+        },
+        {
+          "sent_at": "2025-11-04T14:01:00Z",
+          "from": "Marcus Nwosu",
+          "to": [
+            "Dana Holt"
+          ],
+          "body": "I am escalating this internally now. I will come back with a reviewed response once finance and leadership weigh in."
+        }
+      ]
+    }
+  ]
+}
