@@ -1,12 +1,22 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
-from fastapi import APIRouter, FastAPI, status
+from fastapi import APIRouter, BackgroundTasks, FastAPI, File, Form, Header, HTTPException, UploadFile, status
 
 from app.config import get_settings
 from app.connectors import (
     check_neo4j,
     check_supabase_database,
     check_supabase_project,
+)
+from app.ingestion import (
+    DemoIngestRequest,
+    SourceArtifact,
+    UploadIngestRequest,
+    build_job_status_payload,
+    get_allowed_extensions,
+    run_demo_ingest_job,
+    run_upload_ingest_job,
 )
 
 
@@ -75,14 +85,74 @@ def _stub_payload(name: str) -> dict[str, str]:
     }
 
 
-@worker_router.post("/ingest/document", status_code=status.HTTP_202_ACCEPTED)
-async def ingest_document():
-    return _stub_payload("/worker/ingest/document")
+def _require_worker_secret(x_worker_secret: str | None) -> None:
+    settings = get_settings()
+
+    if not settings.worker_shared_secret:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="WORKER_SHARED_SECRET is not configured.",
+        )
+
+    if x_worker_secret != settings.worker_shared_secret.get_secret_value():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid worker secret.",
+        )
 
 
 @worker_router.post("/ingest/demo", status_code=status.HTTP_202_ACCEPTED)
-async def ingest_demo():
-    return _stub_payload("/worker/ingest/demo")
+async def ingest_demo(
+    request: DemoIngestRequest,
+    background_tasks: BackgroundTasks,
+    x_worker_secret: str | None = Header(default=None, alias="x-worker-secret"),
+):
+    _require_worker_secret(x_worker_secret)
+    settings = get_settings()
+    background_tasks.add_task(run_demo_ingest_job, settings, request)
+    return build_job_status_payload(settings, request.job_id)
+
+
+@worker_router.post("/ingest/document", status_code=status.HTTP_202_ACCEPTED)
+async def ingest_document(
+    background_tasks: BackgroundTasks,
+    job_id: str = Form(...),
+    org_id: str = Form(...),
+    org_slug: str = Form(...),
+    triggered_by_user_id: str | None = Form(default=None),
+    files: list[UploadFile] = File(...),
+    x_worker_secret: str | None = Header(default=None, alias="x-worker-secret"),
+):
+    _require_worker_secret(x_worker_secret)
+    settings = get_settings()
+    allowed_extensions = get_allowed_extensions(settings)
+    artifacts: list[SourceArtifact] = []
+
+    for file in files:
+        extension = Path(file.filename or "").suffix.lower()
+        if extension not in allowed_extensions:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unsupported file type for {file.filename}.",
+            )
+        payload = await file.read()
+        artifacts.append(
+            SourceArtifact(
+                filename=file.filename or "upload",
+                content_type=file.content_type or "application/octet-stream",
+                payload=payload,
+                source_name="authenticated_upload",
+            )
+        )
+
+    request = UploadIngestRequest(
+        jobId=job_id,
+        orgId=org_id,
+        orgSlug=org_slug,
+        triggeredByUserId=triggered_by_user_id,
+    )
+    background_tasks.add_task(run_upload_ingest_job, settings, request, artifacts)
+    return build_job_status_payload(settings, request.job_id)
 
 
 @worker_router.post("/graphrag/index", status_code=status.HTTP_202_ACCEPTED)

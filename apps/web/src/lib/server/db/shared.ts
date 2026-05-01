@@ -71,6 +71,16 @@ export async function requireOrgAccess(orgSlugInput: string) {
   return { supabase, user, org, membership };
 }
 
+export async function requireOrgAdminAccess(orgSlugInput: string) {
+  const context = await requireOrgAccess(orgSlugInput);
+
+  if (!["owner", "admin"].includes(context.membership.role)) {
+    throw new AuthorizationError("Admin access is required for this action.");
+  }
+
+  return context;
+}
+
 export function normalizeCount(count: number | null) {
   return count ?? 0;
 }

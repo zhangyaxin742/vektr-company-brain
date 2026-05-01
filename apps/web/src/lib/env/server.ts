@@ -7,6 +7,7 @@ import { getPublicEnvResult, publicEnvSchema } from "@/lib/env/public";
 const serverEnvSchema = publicEnvSchema.extend({
   FASTAPI_WORKER_URL: z.string().url().default("http://127.0.0.1:8000"),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
+  WORKER_SHARED_SECRET: z.string().min(1).optional(),
   NEO4J_URI: z
     .string()
     .min(1)
@@ -41,6 +42,7 @@ export function getServerEnvResult() {
     FASTAPI_WORKER_URL:
       process.env.FASTAPI_WORKER_URL ?? "http://127.0.0.1:8000",
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    WORKER_SHARED_SECRET: process.env.WORKER_SHARED_SECRET,
     NEO4J_URI: process.env.NEO4J_URI,
     NEO4J_USERNAME: process.env.NEO4J_USERNAME,
     NEO4J_PASSWORD: process.env.NEO4J_PASSWORD,
@@ -56,6 +58,7 @@ export function getServerEnv() {
     FASTAPI_WORKER_URL:
       process.env.FASTAPI_WORKER_URL ?? "http://127.0.0.1:8000",
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    WORKER_SHARED_SECRET: process.env.WORKER_SHARED_SECRET,
     NEO4J_URI: process.env.NEO4J_URI,
     NEO4J_USERNAME: process.env.NEO4J_USERNAME,
     NEO4J_PASSWORD: process.env.NEO4J_PASSWORD,
@@ -84,6 +87,7 @@ export function getServerEnvSummary() {
       !env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
         "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
       !env.SUPABASE_SERVICE_ROLE_KEY && "SUPABASE_SERVICE_ROLE_KEY",
+      !env.WORKER_SHARED_SECRET && "WORKER_SHARED_SECRET",
       !env.NEO4J_URI && "NEO4J_URI",
       !env.NEO4J_USERNAME && "NEO4J_USERNAME",
       !env.NEO4J_PASSWORD && "NEO4J_PASSWORD",

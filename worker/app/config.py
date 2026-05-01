@@ -11,9 +11,15 @@ class Settings(BaseSettings):
     supabase_url: str | None = None
     supabase_service_role_key: SecretStr | None = None
     supabase_db_url: SecretStr | None = None
+    supabase_storage_bucket: str = "documents"
     neo4j_uri: str | None = None
     neo4j_username: str | None = None
     neo4j_password: SecretStr | None = None
+    openai_api_key: SecretStr | None = None
+    openai_embedding_model: str = "text-embedding-3-small"
+    worker_shared_secret: SecretStr | None = None
+    ingest_max_upload_bytes: int = 10 * 1024 * 1024
+    ingest_allowed_extensions: str = ".json,.md,.txt"
 
     model_config = SettingsConfigDict(
         env_file=".env",

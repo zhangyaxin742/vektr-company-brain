@@ -1,10 +1,10 @@
 import {
-  loadDemoResponseSchema,
+  ingestionJobStatusSchema,
   workerConnectorHealthResponseSchema,
   workerHealthResponseSchema,
 } from "@/lib/types";
 import type {
-  LoadDemoResponse,
+  IngestionJobStatus,
   WorkerConnectorHealthResponse,
   WorkerHealthResponse,
 } from "@/lib/types";
@@ -41,11 +41,51 @@ export function createWorkerClient({ baseUrl }: WorkerClientOptions) {
       return workerConnectorHealthResponseSchema.parse(await response.json());
     },
 
-    async loadDemo(): Promise<LoadDemoResponse> {
-      return loadDemoResponseSchema.parse({
-        status: "stub" as const,
-        route: "/worker/ingest/demo",
+    async loadDemo(input: {
+      jobId: string;
+      orgId: string;
+      orgSlug: string;
+      workerSecret: string;
+    }): Promise<IngestionJobStatus> {
+      const response = await fetch(`${baseUrl}/worker/ingest/demo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-worker-secret": input.workerSecret,
+        },
+        body: JSON.stringify({
+          jobId: input.jobId,
+          orgId: input.orgId,
+          orgSlug: input.orgSlug,
+        }),
+        cache: "no-store",
       });
+
+      if (!response.ok) {
+        throw new Error(`Worker demo ingest request failed with ${response.status}.`);
+      }
+
+      return ingestionJobStatusSchema.parse(await response.json());
+    },
+
+    async ingestUpload(input: {
+      formData: FormData;
+      workerSecret: string;
+    }): Promise<IngestionJobStatus> {
+      const response = await fetch(`${baseUrl}/worker/ingest/document`, {
+        method: "POST",
+        headers: {
+          "x-worker-secret": input.workerSecret,
+        },
+        body: input.formData,
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Worker upload ingest request failed with ${response.status}.`);
+      }
+
+      return ingestionJobStatusSchema.parse(await response.json());
     },
   };
 }

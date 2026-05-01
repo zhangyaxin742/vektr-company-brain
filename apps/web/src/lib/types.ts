@@ -59,12 +59,87 @@ export type WorkerConnectorHealthResponse = z.infer<
 >;
 
 export const loadDemoResponseSchema = z.object({
-  status: z.literal("stub"),
-  route: z.literal("/worker/ingest/demo"),
-  message: z.string().optional(),
+  jobId: z.string().uuid(),
+  jobType: z.enum(["demo_load"]),
+  status: z.enum(["queued", "running", "completed", "failed", "partial"]),
+  orgSlug: z.string(),
+  source: z.enum(["public_demo"]),
 });
 
 export type LoadDemoResponse = z.infer<typeof loadDemoResponseSchema>;
+
+export const pipelineJobTypeSchema = z.enum([
+  "demo_load",
+  "upload_ingest",
+  "graphrag_index",
+]);
+
+export type PipelineJobType = z.infer<typeof pipelineJobTypeSchema>;
+
+export const pipelineJobStatusSchema = z.enum([
+  "queued",
+  "running",
+  "completed",
+  "failed",
+  "partial",
+]);
+
+export type PipelineJobStatus = z.infer<typeof pipelineJobStatusSchema>;
+
+export const ingestionCountsSchema = z.object({
+  childJobsQueued: z.number().int().nonnegative().default(0),
+  chunks: z.number().int().nonnegative().default(0),
+  documents: z.number().int().nonnegative().default(0),
+  embeddings: z.number().int().nonnegative().default(0),
+  failures: z.number().int().nonnegative().default(0),
+  filesAccepted: z.number().int().nonnegative().default(0),
+  filesRejected: z.number().int().nonnegative().default(0),
+  warnings: z.number().int().nonnegative().default(0),
+});
+
+export type IngestionCounts = z.infer<typeof ingestionCountsSchema>;
+
+export const ingestionJobStatusSchema = z.object({
+  childJobIds: z.array(z.string().uuid()).default([]),
+  completedAt: z.string().datetime().nullable(),
+  counts: ingestionCountsSchema,
+  createdAt: z.string().datetime(),
+  errorMessage: z.string().nullable(),
+  jobId: z.string().uuid(),
+  jobType: pipelineJobTypeSchema,
+  message: z.string().nullable(),
+  orgId: z.string().uuid(),
+  orgSlug: z.string(),
+  source: z.enum(["public_demo", "authenticated_upload", "system"]),
+  startedAt: z.string().datetime().nullable(),
+  status: pipelineJobStatusSchema,
+});
+
+export type IngestionJobStatus = z.infer<typeof ingestionJobStatusSchema>;
+
+export const uploadAcceptedFileSchema = z.object({
+  contentType: z.string(),
+  name: z.string(),
+  sizeBytes: z.number().int().nonnegative(),
+});
+
+export type UploadAcceptedFile = z.infer<typeof uploadAcceptedFileSchema>;
+
+export const uploadRejectedFileSchema = z.object({
+  name: z.string(),
+  reason: z.string(),
+});
+
+export type UploadRejectedFile = z.infer<typeof uploadRejectedFileSchema>;
+
+export const uploadResponseSchema = z.object({
+  acceptedFiles: z.array(uploadAcceptedFileSchema),
+  jobId: z.string().uuid(),
+  rejectedFiles: z.array(uploadRejectedFileSchema),
+  status: pipelineJobStatusSchema,
+});
+
+export type UploadResponse = z.infer<typeof uploadResponseSchema>;
 
 export const landingSectionSchema = z.object({
   title: z.string(),

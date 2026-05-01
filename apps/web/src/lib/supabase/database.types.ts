@@ -300,6 +300,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      pipeline_jobs: {
+        Row: {
+          completed_at: string | null;
+          created_at: string;
+          dedupe_key: string | null;
+          error_message: string | null;
+          id: string;
+          job_type: "demo_load" | "upload_ingest" | "graphrag_index";
+          org_id: string;
+          parent_job_id: string | null;
+          payload: Json;
+          result: Json;
+          source: "public_demo" | "authenticated_upload" | "system";
+          started_at: string | null;
+          status: "queued" | "running" | "completed" | "failed" | "partial";
+          triggered_by_user_id: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          completed_at?: string | null;
+          created_at?: string;
+          dedupe_key?: string | null;
+          error_message?: string | null;
+          id?: string;
+          job_type: "demo_load" | "upload_ingest" | "graphrag_index";
+          org_id: string;
+          parent_job_id?: string | null;
+          payload?: Json;
+          result?: Json;
+          source: "public_demo" | "authenticated_upload" | "system";
+          started_at?: string | null;
+          status?: "queued" | "running" | "completed" | "failed" | "partial";
+          triggered_by_user_id?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          completed_at?: string | null;
+          created_at?: string;
+          dedupe_key?: string | null;
+          error_message?: string | null;
+          id?: string;
+          job_type?: "demo_load" | "upload_ingest" | "graphrag_index";
+          org_id?: string;
+          parent_job_id?: string | null;
+          payload?: Json;
+          result?: Json;
+          source?: "public_demo" | "authenticated_upload" | "system";
+          started_at?: string | null;
+          status?: "queued" | "running" | "completed" | "failed" | "partial";
+          triggered_by_user_id?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
