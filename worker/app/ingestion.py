@@ -7,7 +7,6 @@ import math
 import random
 import re
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
@@ -26,18 +25,12 @@ except ImportError:  # pragma: no cover - optional runtime fallback
     tiktoken = None
 
 
-DEMO_ORG_NAME = "Acme Labs Demo"
-DEMO_ORG_SLUG = "acme-labs-demo"
-OPENAI_EMBEDDING_DIMENSIONS = 1536
+EMBEDDING_DIMENSIONS = 1024
 TARGET_CHUNK_TOKENS = 800
 CHUNK_OVERLAP_TOKENS = 120
 MAX_CHUNK_TOKENS = 1000
 EMBEDDING_BATCH_SIZE = 16
 EMBEDDING_MAX_ATTEMPTS = 4
-
-
-class WorkerAuthError(RuntimeError):
-    pass
 
 
 class IngestValidationError(RuntimeError):
@@ -753,22 +746,16 @@ async def upload_to_supabase_storage(
 
 
 async def embed_text_batch(settings: Settings, texts: list[str]) -> list[list[float]]:
-    if not settings.openai_api_key:
-        raise RuntimeError("OPENAI_API_KEY is required for embeddings.")
-
     payload = {
         "input": texts,
-        "model": settings.openai_embedding_model,
+        "model": settings.embeddings_model,
     }
-    headers = {
-        "Authorization": f"Bearer {settings.openai_api_key.get_secret_value()}",
-        "Content-Type": "application/json",
-    }
+    headers = {"Content-Type": "application/json"}
 
     for attempt in range(EMBEDDING_MAX_ATTEMPTS):
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
-                "https://api.openai.com/v1/embeddings",
+                f"{settings.embeddings_base_url.rstrip('/')}/embeddings",
                 headers=headers,
                 json=payload,
             )
@@ -776,7 +763,7 @@ async def embed_text_batch(settings: Settings, texts: list[str]) -> list[list[fl
         if response.status_code < 400:
             data = response.json().get("data", [])
             embeddings = [item["embedding"] for item in sorted(data, key=lambda item: item["index"])]
-            if any(len(embedding) != OPENAI_EMBEDDING_DIMENSIONS for embedding in embeddings):
+            if any(len(embedding) != EMBEDDING_DIMENSIONS for embedding in embeddings):
                 raise RuntimeError("Embedding dimensionality did not match the database schema.")
             return embeddings
 

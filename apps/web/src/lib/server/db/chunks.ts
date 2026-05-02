@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireOrgAccess } from "@/lib/server/db/shared";
 
 const searchChunksSchema = z.object({
-  embedding: z.array(z.number()).length(1536),
+  embedding: z.array(z.number()).length(1024),
   matchCount: z.number().int().positive().max(20).default(8),
   matchThreshold: z.number().min(0).max(1).nullable().optional(),
   orgSlug: z.string().trim().min(1),

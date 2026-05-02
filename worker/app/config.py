@@ -15,8 +15,8 @@ class Settings(BaseSettings):
     neo4j_uri: str | None = None
     neo4j_username: str | None = None
     neo4j_password: SecretStr | None = None
-    openai_api_key: SecretStr | None = None
-    openai_embedding_model: str = "text-embedding-3-small"
+    embeddings_base_url: str = "http://127.0.0.1:8080/v1"
+    embeddings_model: str = "text-embeddings-inference"
     worker_shared_secret: SecretStr | None = None
     ingest_max_upload_bytes: int = 10 * 1024 * 1024
     ingest_allowed_extensions: str = ".json,.md,.txt"

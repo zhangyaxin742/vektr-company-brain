@@ -41,7 +41,7 @@ create table if not exists public.chunks (
   document_id uuid not null references public.documents(id) on delete cascade,
   chunk_index integer not null check (chunk_index >= 0),
   content text not null,
-  embedding vector(1536),
+  embedding vector(1024),
   metadata jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   unique (document_id, chunk_index)
@@ -418,7 +418,7 @@ with check (
 
 create or replace function public.match_chunks(
   target_org_id uuid,
-  query_embedding vector(1536),
+  query_embedding vector(1024),
   match_count integer default 8,
   match_threshold double precision default null
 )

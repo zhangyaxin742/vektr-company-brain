@@ -31,7 +31,7 @@ Tables:
 
 Requirements:
 - Enable pgvector.
-- chunks.embedding vector(1536).
+- chunks.embedding vector(1024).
 - Enable RLS on every table.
 - Policies restrict reads/writes to users with membership in org_id.
 - Create match_chunks RPC for vector similarity scoped by org_id.
@@ -96,7 +96,7 @@ Implement:
   - Build a real ingestion pipeline around the current shell so POST /api/demo/load and POST /api/upload create persisted
     documents, chunk rows, embeddings, and a queued follow-on GraphRAG job.
   - Keep the current read-side auth/RLS foundation as-is. It is solid enough to build on:
-      - supabase/migrations/20260430130000_init_auth_rls.sql already gives the right core tables, vector(1536), RLS, and
+      - supabase/migrations/20260430130000_init_auth_rls.sql already gives the right core tables, vector(1024), RLS, and
         match_chunks.
       - apps/web/src/lib/server/db/shared.ts, orgs.ts, documents.ts, chunks.ts, skills.ts, health.ts are good read-side
         DAL scaffolding.
@@ -111,8 +111,8 @@ Implement:
       - UI remains mock-backed; apps/web/src/lib/mock-data.ts diverges from md.md and the seeded corpus, so later phases
         should stop treating mock data as truth.
   - Research defaults to bake in:
-      - Use text-embedding-3-small so embeddings stay 1536-dimensional and match the existing schema/RPC:
-        https://platform.openai.com/docs/guides/embeddings
+      - Use TEI with Qwen/Qwen3-Embedding-0.6B so embeddings stay 1024-dimensional and match the current schema/RPC:
+        https://huggingface.co/Qwen/Qwen3-Embedding-0.6B
       - Batch embedding requests and add retry with exponential backoff for rate-limit resilience:
         https://platform.openai.com/docs/guides/rate-limits/retrying-with-exponential-backoff
       - Use Supabase Storage standard uploads only for small files; keep a hard small-file cap now and leave TUS/resumab
@@ -139,10 +139,10 @@ Implement:
   - Regenerate apps/web/src/lib/supabase/database.types.ts.
   - Add env/settings:
       - web: WORKER_SHARED_SECRET
-      - worker: OPENAI_API_KEY, OPENAI_EMBEDDING_MODEL=text-embedding-3-small, REDIS_URL or Upstash equivalent,
+      - worker: EMBEDDINGS_BASE_URL, EMBEDDINGS_MODEL=text-embeddings-inference, REDIS_URL or Upstash equivalent,
         SUPABASE_STORAGE_BUCKET=documents, WORKER_SHARED_SECRET, INGEST_MAX_UPLOAD_BYTES, INGEST_ALLOWED_EXTENSIONS
   - Add worker dependencies:
-      - openai
+      - TEI-backed local embeddings service
       - tiktoken
       - arq plus Redis client
       - optionally python-magic-style MIME helper only if needed; otherwise keep extension + content-type validation
@@ -216,7 +216,7 @@ Implement:
       - normalization_version
       - document_sha256
   - Embeddings:
-      - Use text-embedding-3-small
+      - Use TEI with Qwen/Qwen3-Embedding-0.6B
       - Batch multiple chunk texts per API call
       - Bound concurrency
       - Retry 429/5xx with jittered exponential backoff
@@ -284,7 +284,7 @@ Implement:
       - no empty chunks
       - stable chunk count for fixed input
   - Embedding tests:
-      - successful batched embeddings write 1536-length vectors
+      - successful batched embeddings write 1024-length vectors
       - retry path on synthetic 429/5xx
       - partial failure marks job partial
   - API/integration tests:
